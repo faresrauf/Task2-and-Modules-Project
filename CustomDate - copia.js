@@ -2,9 +2,8 @@ class CustomDate {
     constructor() {
         this.now = new Date();
         this.date = new Date();
-        
+
         //Use constants to avoid 'magic numbers'
-        this.daysOfTheWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
         this.HoursInDay = 24;
         this.MinsInHour = 60;
         this.SecondsInMin = 60;
@@ -21,28 +20,28 @@ class CustomDate {
     // return yesterday's date
     yesterday() {
         const yesterday = new Date();
-        yesterday.setDate(now.getDate() - 1);
+        yesterday.setDate(this.now.getDate() - 1);
         return yesterday;
     }
 
 
     // return yesterday's day
     yesterdayDay() {
-        return this.daysOfTheWeek[(this.now.getDay() - 1) % 7];
+        return this.yesterday().toLocaleDateString('en-EN', { weekday: 'long' });
     }
 
 
     // return tomorrow's date
     tomorrow() {
         const tomorrow = new Date();
-        tomorrow.setDate(now.getDate() + 1);
+        tomorrow.setDate(this.now.getDate() + 1);
         return tomorrow;
     }
 
 
     // return tomorrow's day
     tomorrowDay() {
-        return this.daysOfTheWeek[(this.now.getDay() + 1) % 7];
+        return this.tomorrow().toLocaleDateString('en-EN', { weekday: 'long' });
     }
 
 
@@ -72,7 +71,9 @@ class CustomDate {
 
     // return boolean
     isFuture() {
-        return this.now < this.date;
+        const now = this.now.valueOf();
+        const date = this.date.valueOf()
+        return now < date;
     }
 
 
@@ -80,7 +81,7 @@ class CustomDate {
     compare(newDate) {
         if (newDate > this.date) {
             return 'Bigger';
-        } else if (this.date) {
+        } else if (newDate < this.date) {
             return 'Smaller'
         } else {
             return 'Equal';
@@ -91,7 +92,7 @@ class CustomDate {
     // Return the difference between the given date and this.date in format (x Days, y hours, z minutes)
     differenceInDays(newDate) {
         const difference = Math.abs(this.date - newDate);
-
+        console.log(difference);
         const days = Math.floor(difference / (this.msInSecond * this.SecondsInMin * this.MinsInHour * this.HoursInDay));
 
         const hours = Math.floor((difference % (this.msInSecond * this.SecondsInMin * this.MinsInHour * this.HoursInDay)) /
@@ -122,6 +123,9 @@ class CustomDate {
 
     // Returns current day (three letters, Mon through Sun) for the given date, else use this.date
     shortDay(newDate) {
-        return this.daysOfTheWeek[newDate.getDay()];
+        newDate = newDate ?? this.Date;
+        return newDate.toLocaleDateString('en-EN', { weekday: 'long' }).slice(0,3);
     }
 }
+
+module.exports = CustomDate;
